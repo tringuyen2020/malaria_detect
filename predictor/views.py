@@ -34,15 +34,25 @@ def index(request):
             img = image.load_img(image_path, target_size=(IMAGE_SIZE, IMAGE_SIZE))
             img_array = image.img_to_array(img)
             img_array = np.expand_dims(img_array, axis=0)
-            img_array = preprocess_input(img_array)
+            print(f"Image array shape: {img_array.shape}")
+            # img_array = preprocess_input(img_array)
 
             # Make prediction
-            predictions = model.predict(img_array)
-            predicted_class = CLASS_LABELS[np.argmax(predictions[0])]
-            print(f"Predicted class index: {np.argmax(predictions[0])}")
+            prediction = model.predict(img_array)
+            print(f"Raw predictions: {prediction[0][0]}")
+            predicted_class = CLASS_LABELS[1] if prediction[0][0] >= 0.5 else CLASS_LABELS[0]
+            print(f"Predicted class: {predicted_class}")
+
+            result = {
+                'predicted_class': predicted_class,
+                'image_url': image_url
+            }
+
         except Exception as e:
             print(f"Error occurred: {e}")
             # Clean up the temporary file
             os.remove(image_path)
 
-    return render(request, 'predictor/index.html', {'predicted_class': predicted_class, 'image_url': image_url})
+        return render(request, 'predictor/index.html', {'result': result})
+    
+    return render(request, 'predictor/index.html')

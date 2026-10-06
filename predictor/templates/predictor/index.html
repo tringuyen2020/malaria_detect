@@ -10,11 +10,10 @@
         <input type="file" name="image" accept="image/*">
         <button type="submit">Analyze Scan</button>
     </form>
-
-    {% if predicted_class %}
-        <p>Result: {{ predicted_class }}</p>
-        {% if image_url %}
-            <img src="{{ image_url }}" alt="Uploaded Image" style="max-width: 300px;">
+    {% if result %}
+        <p>Result: {{ result.predicted_class }}</p>
+        {% if result.image_url %}
+            <img src="{{ result.image_url }}" alt="Uploaded Image" style="max-width: 300px;">
         {% endif %}
     {% endif %}
 </body>
